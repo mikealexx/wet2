@@ -18,6 +18,8 @@ public:
     TreeNode(shared_ptr<T> data, const S& key);
     TreeNode(const TreeNode& other);
     ~TreeNode() = default;
+    int getRank() const;
+    void setRank(int rank);
     TreeNode& operator=(const TreeNode& other);
 
 };
@@ -51,6 +53,16 @@ TreeNode<T, S>::TreeNode(const TreeNode<T, S>& other):
     right(nullptr),
     height(1)
 {}
+
+template<class T, class S>
+int TreeNode<T, S>::getRank() const {
+    return this->rank;
+}
+
+template<class T, class S>
+void TreeNode<T, S>::setRank(int rank) {
+    this->rank = rank;
+}
 
 template <class T, class S>
 TreeNode<T, S>& TreeNode<T, S>::operator=(const TreeNode<T, S>& other) {

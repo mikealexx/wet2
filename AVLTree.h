@@ -67,6 +67,7 @@ class AVLTree {
             }
 
             if (key < root->key){
+                root->setRank(root->getRank()-1);
                 root->left = deleteNode(root->left, key);
             }
 
@@ -129,6 +130,7 @@ class AVLTree {
             newRoot->left = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
+            newRoot->setRank(newRoot->getRank()+1);
             return newRoot;
         }
 
@@ -140,6 +142,7 @@ class AVLTree {
             newRoot->right = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
+            oldRoot->setRank(0);
             return newRoot;
         }
 
@@ -155,6 +158,8 @@ class AVLTree {
             oldRoot->height = height(oldRoot);
             node->height = height(node);
             newRoot->height = height(newRoot);
+            oldRoot->setRank(0);
+            newRoot->setRank(node->getRank()+1);
             return newRoot;
         }
 
@@ -170,6 +175,8 @@ class AVLTree {
             oldRoot->height = height(oldRoot);
             node->height = height(node);
             newRoot->height = height(newRoot);
+            oldRoot->setRank(0);
+            newRoot->setRank(node->getRank()+1);
             return newRoot;
         }
 
@@ -178,6 +185,7 @@ class AVLTree {
                 return new TreeNode<T, S>(data, key);
             }
             if(key < root->key) { //locate correct insertion position
+                root->setRank(root->getRank()+1);
                 root->left = insertHelper(root->left, data, key);
             }
             else if (key > root->key) { //REMOVE = LATER - DONT FORGET

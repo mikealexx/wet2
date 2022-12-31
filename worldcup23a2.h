@@ -15,13 +15,16 @@
 #ifndef WORLDCUP23A2_H_
 #define WORLDCUP23A2_H_
 
+#include "AVLTree.h"
+#include "Team.h"
+#include "TeamStats.h"
+
 #include "wet2util.h"
 
 class world_cup_t {
 private:
-	//
-	// Here you may add anything you want
-	//
+	AVLTree<Team, int> teamsById; //in this tree the ranks have no meaning
+	AVLTree<Team, TeamStats> teamsByRank;
 	
 public:
 	// <DO-NOT-MODIFY> {

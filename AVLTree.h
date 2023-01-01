@@ -326,12 +326,14 @@ AVLTree<T, S>::~AVLTree() {
     AVLTree::destruct(this->root);
 }
 
+//make sure to check if key exists before adding it
 template<class T, class S>
 void AVLTree<T, S>::insert(shared_ptr<T> data, const S& key) {
     this->root = insertHelper(this->root, data, key);
     this->size++;
 }
 
+//make sure to check if key exists before removing it
 template<class T, class S>
 void AVLTree<T, S>::remove(const S& key) {
     this->root = removeHelper(this->root, key);

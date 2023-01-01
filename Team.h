@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "AVLTree.h"
 #include "wet2util.h"
-#include "UpTreeNode.h"
+#include "UpTree.h"
 #include "TeamStats.h"
 
 class Player;

@@ -159,7 +159,7 @@ class AVLTree {
             node->height = height(node);
             newRoot->height = height(newRoot);
             oldRoot->setRank(0);
-            newRoot->setRank(node->getRank()+1);
+            newRoot->setRank(1);
             return newRoot;
         }
 
@@ -176,7 +176,7 @@ class AVLTree {
             node->height = height(node);
             newRoot->height = height(newRoot);
             oldRoot->setRank(0);
-            newRoot->setRank(node->getRank()+1);
+            newRoot->setRank(1);
             return newRoot;
         }
 

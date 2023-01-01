@@ -75,4 +75,4 @@ TreeNode<T, S>& TreeNode<T, S>::operator=(const TreeNode<T, S>& other) {
     return *this;
 }
 
-#endif
+#endif //TreeNode_h

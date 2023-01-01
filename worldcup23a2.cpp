@@ -1,6 +1,8 @@
 #include "worldcup23a2.h"
 
-world_cup_t::world_cup_t()
+world_cup_t::world_cup_t():
+	teamsById(),
+	teamsByRank()
 {
 	// TODO: Your code goes here
 }

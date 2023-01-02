@@ -20,7 +20,6 @@ class Team {
         int goalKeepers;
         permutation_t teamSpirit;
         shared_ptr<UpTree> rootPlayer;
-        int lastGamesPlayed;
         TeamStats stats;
 
     public:

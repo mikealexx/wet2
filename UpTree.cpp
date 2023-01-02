@@ -2,7 +2,7 @@
 
 UpTree::UpTree(Player* player, permutation_t& spiritRank, int gamesPlayedRank, int teamId):
     player(player),
-    parent(),
+    parent(nullptr),
     spiritRank(spiritRank),
     gamesPlayedRank(),
     playerId(player->getId()),

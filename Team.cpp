@@ -10,9 +10,8 @@ Team::Team(int id):
     goalKeepers(0),
     teamSpirit(permutation_t::neutral()),
     rootPlayer(nullptr),
-    lastPerm(permutation_t::neutral()),
     lastGamesPlayed(0),
-    stats(id, ability)
+    stats(ability, id)
 {}
 
 int Team::getID() const {
@@ -43,12 +42,8 @@ permutation_t Team::getTeamSpirit() const {
     return this->teamSpirit;
 }
 
-UpTreeNode* Team::getRootPlayer() const {
+shared_ptr<UpTree> Team::getRoot() const {
     return this->rootPlayer;
-}
-
-permutation_t Team::getlastPerm() const {
-    return this->lastPerm;
 }
 
 int Team::getLastGamesPlayed() const {
@@ -79,10 +74,14 @@ void Team::setTeamSpirit(permutation_t teamSpirit) {
     this->teamSpirit = teamSpirit;
 }
 
-void Team::setLastPerm(permutation_t perm) {
-    this->lastPerm = perm;
-}
-
 void Team::setLastGamesPlayed(int games) {
     this->lastGamesPlayed = games;
+}
+
+TeamStats Team::getStats() const{
+    return this->stats;
+}
+
+void Team::updateStats() {
+    stats = TeamStats(this->getAbility(), this->getID());
 }

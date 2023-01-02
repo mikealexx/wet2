@@ -18,6 +18,8 @@
 #include "AVLTree.h"
 #include "Team.h"
 #include "TeamStats.h"
+#include "HashTable.h"
+#include "UpTree.h"
 
 #include "wet2util.h"
 
@@ -25,7 +27,8 @@ class world_cup_t {
 private:
 	AVLTree<Team, int> teamsById; //in this tree the ranks have no meaning
 	AVLTree<Team, TeamStats> teamsByRank;
-	
+	HashTable playersHash;
+
 public:
 	// <DO-NOT-MODIFY> {
 	

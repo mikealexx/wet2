@@ -6,7 +6,6 @@
 class Player {
     private:
         int id;
-        int teamId;
         permutation_t spirit;
         int gamesPlayed;
         int ability;
@@ -15,7 +14,7 @@ class Player {
 
     public:
         Player() = delete;
-        Player(int id, int teamId, permutation_t spirit, int gamesPlayed, int ability, int cards, bool goalKeeper);
+        Player(int id, permutation_t spirit, int gamesPlayed, int ability, int cards, bool goalKeeper);
         ~Player() = default;
 
         int getId() const;
@@ -24,6 +23,7 @@ class Player {
         int getAbility() const;
         int getCards() const;
         bool isGoalKeeper() const;
+        int getGamesPlayed() const;
 
         void addAbility(int ability);
         void addCards(int cards);

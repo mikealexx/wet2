@@ -1,8 +1,7 @@
 #include "Player.h"
 
-Player::Player(int id, int teamId, permutation_t spirit, int gamesPlayed, int ability, int cards, bool goalKeeper):
+Player::Player(int id, permutation_t spirit, int gamesPlayed, int ability, int cards, bool goalKeeper):
     id(id),
-    teamId(teamId),
     spirit(spirit),
     gamesPlayed(gamesPlayed),
     ability(ability),
@@ -12,10 +11,6 @@ Player::Player(int id, int teamId, permutation_t spirit, int gamesPlayed, int ab
 
 int Player::getId() const {
     return this->id;
-}
-
-int Player::getTeamId() const {
-    return this->teamId;
 }
 
 permutation_t Player::getSpirit() const {
@@ -32,6 +27,10 @@ int Player::getCards() const {
 
 bool Player::isGoalKeeper() const {
     return this->goalKeeper;
+}
+
+int Player::getGamesPlayed() const {
+    return this->gamesPlayed;
 }
 
 void Player::addAbility(int ability) {

@@ -260,6 +260,7 @@ class AVLTree {
         ~AVLTree();
         void insert(shared_ptr<T> data, const S& key);
         void remove(const S& key);
+        shared_ptr<T> find(const S& key);
         TreeNode<T, S>* findNode(const S& key);
         TreeNode<T, S>* findPredecessor(const S& key);
         TreeNode<T, S>* findSuccessor(const S& key);
@@ -343,6 +344,11 @@ void AVLTree<T, S>::remove(const S& key) {
 template<class T, class S>
 TreeNode<T, S>* AVLTree<T, S>::findNode(const S& key){
     return findHelper(this->root, key);
+}
+
+template<class T, class S>
+shared_ptr<T> AVLTree<T, S>::find(const S& key) {
+    return findNode(key)->data;
 }
 
 template<class T, class S>

@@ -1,6 +1,6 @@
 #include "TeamStats.h"
 
-TeamStats::TeamStats(int id, int ability): ability(ability), id(id) {}
+TeamStats::TeamStats(int ability, int id): ability(ability), id(id) {}
 
 int TeamStats::getAbility() const {
     return this->ability;

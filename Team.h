@@ -8,7 +8,7 @@
 #include "TeamStats.h"
 
 class Player;
-class UpTreeNode;
+class UpTree;
 
 class Team {
     private:
@@ -19,12 +19,9 @@ class Team {
         int size;
         int goalKeepers;
         permutation_t teamSpirit;
-        UpTreeNode* rootPlayer;
-        permutation_t lastPerm;
+        shared_ptr<UpTree> rootPlayer;
         int lastGamesPlayed;
         TeamStats stats;
-
-
 
     public:
         Team() = delete;
@@ -38,9 +35,11 @@ class Team {
         int getSize() const;
         int getGoalKeepers() const;
         permutation_t getTeamSpirit() const;
-        UpTreeNode* getRootPlayer() const;
+        shared_ptr<UpTree> getRoot() const;
         permutation_t getlastPerm() const;
         int getLastGamesPlayed() const;
+        TeamStats getStats() const;
+        void updateStats();
 
         void addPoints(int points);
         void addGamesPlayed(int games);

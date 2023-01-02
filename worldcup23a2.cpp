@@ -6,7 +6,7 @@ world_cup_t::world_cup_t():
 	playersHash()
 {}
 
-//world_cup_t::~world_cup_t() = default;
+world_cup_t::~world_cup_t() = default;
 
 StatusType world_cup_t::add_team(int teamId) {
 	if(teamId <= 0) {
@@ -16,7 +16,7 @@ StatusType world_cup_t::add_team(int teamId) {
 		shared_ptr<Team> temp = this->teamsById.find(teamId);
 		return StatusType::FAILURE; //found an existing team with this id - return FAILURE.
 	}
-	catch(const AVLTree<Team, int>::KeyAlreadyExists& e) {} //team with this id not found (which is good) - proceed.
+	catch(const AVLTree<Team, int>::NodeNotFound& e) {} //team with this id not found (which is good) - proceed.
 	try {
 		shared_ptr<Team> team(new Team(teamId));
 		this->teamsById.insert(team, teamId);

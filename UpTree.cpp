@@ -16,7 +16,7 @@ int UpTree::getPlayerId() const {
 }
 
 int UpTree::getSize() const {
-    this->size;
+    return this->size;
 }
 
 void UpTree::setSize(int size) {

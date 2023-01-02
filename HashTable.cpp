@@ -1,10 +1,8 @@
 #include "HashTable.h"
 
-
 HashTable::HashTable():
     size(127),
-    elemNum(),
-    loadFactor()
+    elemNum()
 {
     try {
         this->arr = new AVLTree<UpTree, int>[this->size];
@@ -47,10 +45,6 @@ void HashTable::add(shared_ptr<UpTree> tree) {
 shared_ptr<UpTree> HashTable::find(int playerId) {
     int pos = hashFunction(playerId, this->getSize());
     return this->getArray()[pos].findNode(playerId)->data;
-}
-
-float HashTable::getLoadFactor() const {
-    return this->loadFactor;
 }
 
 int HashTable::getSize() const {

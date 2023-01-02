@@ -1,7 +1,7 @@
 #ifndef HashTable_h
 #define HashTable_h
 
-#include "DynamicArray.h"
+#include "UpTree.h"
 
 class HashTable {
 
@@ -9,7 +9,6 @@ class HashTable {
     
         int size;
         int elemNum;
-        float loadFactor;
         AVLTree<UpTree, int>* arr;
 
     public:
@@ -29,13 +28,9 @@ class HashTable {
 
         shared_ptr<UpTree> find(int playerId);
 
-        float getLoadFactor() const;
-
         int getElemNum() const;
 
         int getSize() const;
-
-        float getLoadFactor() const;
 
         AVLTree<UpTree, int>* getArray() const; 
         

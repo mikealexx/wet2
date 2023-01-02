@@ -17,6 +17,7 @@ class UpTree {
         int gamesPlayedRank;
         int playerId;
         int size;
+        permutation_t lastPerm;
 
     public:
         UpTree() = delete;
@@ -31,16 +32,17 @@ class UpTree {
             if (tree1->getSize() >= tree2->getSize()) {
                 tree2->setParent(tree1);
                 tree1->setSize(tree1->getSize() + tree2->getSize());
-                tree2->setGamesPlayedRank(tree2->getGamesPlayedRank() - tree1->getGamesPlayedRank());
-                tree2->setSpiritRank(tree2->getSpiritRank() * tree1->getSpiritRank().inv());
+                int gamesRank1 = tree1->getGamesPlayedRank();
+                int gamesRank2 = tree2->getGamesPlayedRank();
+                tree2->setGamesPlayedRank(gamesRank2 - gamesRank1);
+                permutation_t spirit2 = tree2->getSpiritRank();
+                tree2->setSpiritRank(tree1->getLastPerm() * spirit2);
+                tree1->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());
             }
             else {
-                tree1->setParent(tree1);
+                tree1->setParent(tree2);
                 tree2->setSize(tree1->getSize() + tree2->getSize());
-                tree1->setGamesPlayedRank(tree1->getGamesPlayedRank() - tree2->getGamesPlayedRank());
-                tree1->setSpiritRank(tree1->getSpiritRank() * tree2->getSpiritRank().inv());
-                tree2->setGamesPlayedRank(tree1->getGamesPlayedRank() + tree2->getGamesPlayedRank());
-                tree2->setSpiritRank(tree2->getSpiritRank() * tree1->getSpiritRank());
+                
             }
         }
         
@@ -61,6 +63,10 @@ class UpTree {
         UpTree* getParent() const;
 
         void setParent(UpTree* tree);
+
+        permutation_t getLastPerm() const;
+
+        void setLastPerm(permutation_t perm);
 };
 
 #endif

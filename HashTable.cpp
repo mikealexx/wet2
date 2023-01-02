@@ -1,18 +1,75 @@
 #include "HashTable.h"
 
-int HashTable::hashFunction(int id) const {
-    return id % this->arr.getSize();
-}
 
-void HashTable::add(UpTree* tree) {
-    float newLoadFactor = (this->arr.getElemNum() + 1) / this->arr.getSize();
-
-    if (newLoadFactor >= 0.7) {
-        DynamicArray newArr = this->arr.resize();
-        
+HashTable::HashTable():
+    size(127),
+    elemNum(),
+    loadFactor()
+{
+    try {
+        this->arr = new AVLTree<UpTree, int>[this->size];
+    }
+    catch(const std::bad_alloc& e) {
+        throw std::bad_alloc();
     }
 }
 
+void HashTable::add(shared_ptr<UpTree> tree) {
+    float newLoadFactor = (this->getElemNum() + 1) / this->getSize();
+
+    if (newLoadFactor >= 0.7) {
+        int newSize = 2 * (this->getSize() + 1) - 1;
+        AVLTree<UpTree, int>* newArr = new AVLTree<UpTree, int>[newSize];
+        
+        for (int i = 0; i < this->getSize(); i++){
+            AVLTree<UpTree, int> curr = this->getArray()[i];
+            TreeNode<UpTree, int>** tempArr = new TreeNode<UpTree, int>*[curr.getSize()]; 
+            AVLTree<UpTree, int>::treeToArray(tempArr, curr.root, 0);
+
+            for (int j = 0; j < curr.getSize(); j++){
+                shared_ptr<UpTree> curr = tempArr[i]->data;
+                int pos = hashFunction(curr->getPlayerId(), newSize);
+                newArr[pos].insert(curr, curr->getPlayerId());
+            }
+            delete tempArr;
+        }
+        this->setArray(newArr);
+        this->setSize(newSize);
+    }
+
+    int pos = hashFunction(tree->getPlayerId(), this->getSize());
+    this->getArray()[pos].insert(tree, tree->getPlayerId());
+    this->elemNum++;
+    this->setSize(this->getSize() + 1);
+    
+}
+
+shared_ptr<UpTree> HashTable::find(int playerId) {
+    int pos = hashFunction(playerId, this->getSize());
+    return this->getArray()[pos].findNode(playerId)->data;
+}
+
 float HashTable::getLoadFactor() const {
-    return this->arr.getLoadFactor();
+    return this->loadFactor;
+}
+
+int HashTable::getSize() const {
+    return this->size;
+}
+
+int HashTable::getElemNum() const {
+    return this->elemNum;
+}
+
+AVLTree<UpTree, int>* HashTable::getArray() const {
+    return this->arr;
+}
+
+void HashTable::setArray(AVLTree<UpTree, int>*& arr) {
+    delete this->arr;
+    this->arr = arr;
+}
+
+void HashTable::setSize(int size) {
+    this->size = size;
 }

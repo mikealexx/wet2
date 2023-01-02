@@ -23,12 +23,12 @@ class UpTree {
     public:
 
         UpTree() = delete;
-        UpTree(Player* player, permutation_t& spiritRank, int gamesPlayedRank, int teamId);
+        UpTree(Player* player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId);
         ~UpTree() = default;
         
         int getPlayerId() const;
 
-        // PlayerId1 is the root of the buying team, playerId2 is the root of the buyee team
+        // Player1 is the root of the buying team, player2 is the root of the buyee team
         static void Union(shared_ptr<UpTree> player1, shared_ptr<UpTree> player2) {
             shared_ptr<UpTree> tree1 = Find(player1);
             shared_ptr<UpTree> tree2 = Find(player2);
@@ -116,6 +116,13 @@ class UpTree {
             }
 
             return productSpirit;
+        }
+
+        static bool isActive(shared_ptr<UpTree> player) {
+            while(player->getParent() != nullptr) {
+                player = player->getParent();
+            }
+            return player->teamId > 0;
         }
         
         int getSize() const;

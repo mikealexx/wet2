@@ -48,6 +48,7 @@ class Team {
         void setTeamSpirit(permutation_t teamSpirit);
         void setLastPerm(permutation_t perm);
         void setLastGamesPlayed(int games);
+        void setRoot(shared_ptr<UpTree> root);
 
 };
 

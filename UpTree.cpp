@@ -1,6 +1,6 @@
 #include "UpTree.h"
 
-UpTree::UpTree(Player* player, permutation_t& spiritRank, int gamesPlayedRank, int teamId):
+UpTree::UpTree(Player* player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId):
     player(player),
     parent(nullptr),
     spiritRank(spiritRank),

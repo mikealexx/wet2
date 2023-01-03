@@ -131,23 +131,8 @@ class AVLTree {
             newRoot->left = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
-            if (oldRoot->left == nullptr) {
-                if (oldRoot->right == nullptr) {
-                    oldRoot->setRank(1);
-                }
-                else {
-                    oldRoot->setRank(oldRoot->right->getRank() + 1);
-                }
-            }
-            else{
-                oldRoot->setRank(oldRoot->right->getRank() + oldRoot->left->getRank() + 1);
-            }
-            if (newRoot->right == nullptr) {
-                newRoot->setRank(oldRoot->getRank() + 1);
-            }
-            else {
-                newRoot->setRank(newRoot->right->getRank() + oldRoot->getRank() + 1);
-            }
+            oldRoot->createRank();
+            newRoot->createRank();
             return newRoot;
         }
 
@@ -159,23 +144,8 @@ class AVLTree {
             newRoot->right = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
-            if (oldRoot->right == nullptr) {
-                if (oldRoot->left == nullptr) {
-                    oldRoot->setRank(1);
-                }
-                else {
-                    oldRoot->setRank(oldRoot->left->getRank() + 1);
-                }
-            }
-            else{
-                oldRoot->setRank(oldRoot->right->getRank() + oldRoot->left->getRank() + 1);
-            }
-            if (newRoot->left == nullptr) {
-                newRoot->setRank(oldRoot->getRank() + 1);
-            }
-            else {
-                newRoot->setRank(newRoot->left->getRank() + oldRoot->getRank() + 1);
-            }
+            oldRoot->createRank();
+            newRoot->createRank();
             return newRoot;
         }
 
@@ -191,29 +161,9 @@ class AVLTree {
             oldRoot->height = height(oldRoot);
             node->height = height(node);
             newRoot->height = height(newRoot);
-            if (oldRoot->right == nullptr) {
-                if (oldRoot->left == nullptr) {
-                    oldRoot->setRank(1);
-                }
-                else {
-                    oldRoot->setRank(oldRoot->left->getRank() + 1);
-                }
-            }
-            else{
-                oldRoot->setRank(oldRoot->right->getRank() + oldRoot->left->getRank() + 1);
-            }
 
-            if (node->right == nullptr) {
-                if (node->left == nullptr) {
-                    node->setRank(1);
-                }
-                else {
-                    node->setRank(node->left->getRank() + 1);
-                }
-            }
-            else{
-                node->setRank(node->right->getRank() + node->left->getRank() + 1);
-            }
+            oldRoot->createRank();
+            node->createRank();
 
             newRoot->setRank(node->getRank() + oldRoot->getRank() + 1);
 
@@ -233,29 +183,8 @@ class AVLTree {
             node->height = height(node);
             newRoot->height = height(newRoot);
 
-            if (oldRoot->right == nullptr) {
-                if (oldRoot->left == nullptr) {
-                    oldRoot->setRank(1);
-                }
-                else {
-                    oldRoot->setRank(oldRoot->left->getRank() + 1);
-                }
-            }
-            else{
-                oldRoot->setRank(oldRoot->right->getRank() + oldRoot->left->getRank() + 1);
-            }
-
-            if (node->right == nullptr) {
-                if (node->left == nullptr) {
-                    node->setRank(1);
-                }
-                else {
-                    node->setRank(node->left->getRank() + 1);
-                }
-            }
-            else{
-                node->setRank(node->right->getRank() + node->left->getRank() + 1);
-            }
+            oldRoot->createRank();
+            node->createRank();
 
             newRoot->setRank(node->getRank() + oldRoot->getRank() + 1);
 

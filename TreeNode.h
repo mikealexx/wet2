@@ -20,6 +20,7 @@ public:
     ~TreeNode() = default;
     int getRank() const;
     void setRank(int rank);
+    void createRank();
     TreeNode& operator=(const TreeNode& other);
 
 };
@@ -62,6 +63,24 @@ int TreeNode<T, S>::getRank() const {
 template<class T, class S>
 void TreeNode<T, S>::setRank(int rank) {
     this->rank = rank;
+}
+
+template<class T, class S>
+void TreeNode<T, S>::createRank() {
+    if (this->right == nullptr) {
+        if (this->left == nullptr) {
+            this->setRank(1);
+        }
+        else {
+            this->setRank(this->left->getRank() + 1);
+        }
+    }
+    else if (this->left == nullptr) {
+        this->setRank(this->right->getRank() + 1);
+    }
+    else{
+        this->setRank(this->right->getRank() + this->left->getRank() + 1);
+    }
 }
 
 template <class T, class S>

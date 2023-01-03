@@ -259,14 +259,16 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i) {
 		return output_t<int>(StatusType::FAILURE);
 	}
 	
-	//int sum = 0;
+	int sum = 0;
 	TreeNode<Team, TeamStats>* node = this->teamsByRank.root;
 	while (node != nullptr) {
-        int rightSize = 0;
-        if (node->right != nullptr) {
-            rightSize = node->right->getRank();
+        int leftSize = 0;
+        if (node->left != nullptr) {
+            leftSize = node->left->getRank();
         }
-		int idx = node->getRank() - rightSize - 1;
+
+		int idx = sum + leftSize;
+
 		if (idx == i) {
 			return output_t<int>(node->data->getID());
 		}
@@ -274,7 +276,7 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i) {
 			node = node->left;
 		}
 		else {
-			//sum += node->getRank() + 1;
+			sum = idx;
 			node = node->right;
 		}
 	}
@@ -335,7 +337,12 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->setTeamSpirit(team1->getTeamSpirit() * team2-> getTeamSpirit());
 		team1->addGoalKeepers(team2->getGoalKeepers());
 
-		team1->setRoot(UpTree::Find(team1->getRoot()));
+        if (team1->getRoot() != nullptr){
+            team1->setRoot(UpTree::Find(team1->getRoot()));
+        }
+		else{
+            team1->setRoot(team2->getRoot());
+        }
 		
 		this->teamsById.remove(teamId2);
 		this->teamsByRank.remove(team2->getStats());

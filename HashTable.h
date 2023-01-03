@@ -27,8 +27,10 @@ class HashTable {
         void add(shared_ptr<UpTree> tree);
 
         shared_ptr<UpTree> find(int playerId);
-
+        
         int getElemNum() const;
+
+        void addElemNum(int num);
 
         int getSize() const;
 

@@ -34,6 +34,7 @@ class UpTree {
             shared_ptr<UpTree> tree2 = Find(player2);
             if (tree1->getSize() >= tree2->getSize()) {
                 tree2->setParent(tree1);
+                tree1->setParent(nullptr);
                 tree1->setSize(tree1->getSize() + tree2->getSize());
                 int gamesRank1 = tree1->getGamesPlayedRank();
                 int gamesRank2 = tree2->getGamesPlayedRank();
@@ -44,6 +45,7 @@ class UpTree {
             }
             else {
                 tree1->setParent(tree2);
+                tree2->setParent(nullptr);
                 tree2->setSize(tree1->getSize() + tree2->getSize());
                 int gamesRank1 = tree1->getGamesPlayedRank();
                 int gamesRank2 = tree2->getGamesPlayedRank();

@@ -25,6 +25,9 @@ StatusType world_cup_t::add_team(int teamId) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
+	catch(const std::exception& e) {
+		return StatusType::FAILURE;
+	}
 	return StatusType::SUCCESS;
 }
 
@@ -73,6 +76,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 			shared_ptr<UpTree> root = team->getRoot();
 			tree->setSpiritRank(root->getLastPerm() * spirit);
 			root->setLastPerm(root->getLastPerm() * spirit);
+			tree->setParent(root);
 		}
 		if (goalKeeper){
 			team->addGoalKeepers(1);
@@ -107,14 +111,20 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 		if(team1->getGoalKeepers() < 1 || team2->getGoalKeepers() < 1) {
 			return StatusType::FAILURE;
 		}
+		team1->addGamesPlayed(1);
+		team2->addGamesPlayed(1);
 		int team1Score = team1->getPoints() + team1->getAbility();
 		int team2Score = team2->getPoints() + team2->getAbility();
+		shared_ptr<UpTree> root1 = team1->getRoot();
+		shared_ptr<UpTree> root2 = team2->getRoot();
+		root1->setGamesPlayedRank(root1->getGamesPlayedRank() + 1);
+		root2->setGamesPlayedRank(root2->getGamesPlayedRank() + 1);
 		if(team1Score > team2Score) { //team1 wins by score
 			winner = 1;
 			team1->addPoints(3);
 		}
 		else if(team1Score < team2Score) { //team2 wins by score
-		winner = 3;
+			winner = 3;
 			team2->addPoints(3);
 		}
 		else { //tie by score, proceed playing by team strength
@@ -134,12 +144,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 				team2->addPoints(1);
 			} 
 		}
-		team1->addGamesPlayed(1);
-		shared_ptr<UpTree> root1 = team1->getRoot();
-		root1->setGamesPlayedRank(root1->getGamesPlayedRank() + 1);
-		team2->addGamesPlayed(1);
-		shared_ptr<UpTree> root2 = team2->getRoot();
-		root2->setGamesPlayedRank(root2->getGamesPlayedRank() + 1);
+		
 	}
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
@@ -293,6 +298,8 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->addToSize(size2);
 		team1->addAbility(team2->getAbility());
 		team1->addPoints(team2->getPoints());
+		team1->setTeamSpirit(team1->getTeamSpirit() * team2-> getTeamSpirit());
+		team1->addGoalKeepers(team2->getGoalKeepers());
 		if (size2 > size1) {
 			team1->setRoot(root2);
 			root2->setTeamId(teamId1);

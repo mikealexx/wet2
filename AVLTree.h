@@ -130,7 +130,7 @@ class AVLTree {
             newRoot->left = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
-            newRoot->setRank(newRoot->getRank()+1);
+            newRoot->setRank(newRoot->getRank() + oldRoot->getRank() + 1);
             return newRoot;
         }
 
@@ -142,7 +142,7 @@ class AVLTree {
             newRoot->right = oldRoot;
             oldRoot->height = height(oldRoot);
             newRoot->height = height(newRoot);
-            oldRoot->setRank(0);
+            oldRoot->setRank(oldRoot->getRank() - newRoot->getRank() - 1);
             return newRoot;
         }
 
@@ -158,8 +158,8 @@ class AVLTree {
             oldRoot->height = height(oldRoot);
             node->height = height(node);
             newRoot->height = height(newRoot);
-            oldRoot->setRank(0);
-            newRoot->setRank(1);
+            oldRoot->setRank(newRoot->getRank());
+            newRoot->setRank(newRoot->getRank() + node->getRank() + 1);
             return newRoot;
         }
 
@@ -175,8 +175,8 @@ class AVLTree {
             oldRoot->height = height(oldRoot);
             node->height = height(node);
             newRoot->height = height(newRoot);
-            oldRoot->setRank(0);
-            newRoot->setRank(1);
+            node->setRank(node->getRank() - newRoot->getRank() - 1);
+            newRoot->setRank(newRoot->getRank() + oldRoot->getRank() + 1);
             return newRoot;
         }
 
@@ -184,6 +184,7 @@ class AVLTree {
             if(root == nullptr) {
                 return new TreeNode<T, S>(data, key);
             }
+
             if(key < root->key) { //locate correct insertion position
                 root->setRank(root->getRank()+1);
                 root->left = insertHelper(root->left, data, key);
@@ -330,6 +331,13 @@ AVLTree<T, S>::~AVLTree() {
 //make sure to check if key exists before adding it
 template<class T, class S>
 void AVLTree<T, S>::insert(shared_ptr<T> data, const S& key) {
+    /*try {
+        this->find(key);
+        throw AVLTree<T, S>::KeyAlreadyExists();
+    }
+
+    catch(const std::exception& e){}*/
+
     this->root = insertHelper(this->root, data, key);
     this->size++;
 }
@@ -337,13 +345,25 @@ void AVLTree<T, S>::insert(shared_ptr<T> data, const S& key) {
 //make sure to check if key exists before removing it
 template<class T, class S>
 void AVLTree<T, S>::remove(const S& key) {
+    /*try {
+        this->find(key);
+    }
+    catch(const std::exception& e){
+        throw e;
+    }*/
+
     this->root = removeHelper(this->root, key);
     this->size--;
 }
 
 template<class T, class S>
 TreeNode<T, S>* AVLTree<T, S>::findNode(const S& key){
-    return findHelper(this->root, key);
+    try {
+        return findHelper(this->root, key);
+    }
+    catch(const std::exception& e) {
+        throw e;
+    }
 }
 
 template<class T, class S>

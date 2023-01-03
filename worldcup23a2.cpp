@@ -16,7 +16,7 @@ StatusType world_cup_t::add_team(int teamId) {
 		shared_ptr<Team> temp = this->teamsById.find(teamId);
 		return StatusType::FAILURE; //found an existing team with this id - return FAILURE.
 	}
-	catch(const AVLTree<Team, int>::NodeNotFound& e) {} //team with this id not found (which is good) - proceed.
+	catch(const std::exception& e) {} //team with this id not found (which is good) - proceed.
 	try {
 		shared_ptr<Team> team(new Team(teamId));
 		this->teamsById.insert(team, teamId);
@@ -40,7 +40,7 @@ StatusType world_cup_t::remove_team(int teamId) {
 			team->getRoot()->setTeamId(-1);
 		}
 	}
-	catch(const AVLTree<Team, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 
@@ -59,11 +59,11 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
 		return StatusType::FAILURE;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {} //Player with this id not found - proceed.
+	catch(const std::exception& e) {} //Player with this id not found - proceed.
 
 	try {
 		shared_ptr<Team> team = this->teamsById.find(teamId);
-		Player* player = new Player(playerId, spirit, gamesPlayed - team->getGamesPlayed(), ability, cards, goalKeeper);
+		shared_ptr<Player> player (new Player(playerId, spirit, gamesPlayed - team->getGamesPlayed(), ability, cards, goalKeeper));
 		shared_ptr<UpTree> tree(new UpTree(player, spirit, 0, teamId));
 		if (team->getRoot() == nullptr) {
 			tree->setGamesPlayedRank(team->getGamesPlayed());
@@ -87,11 +87,11 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		this->teamsByRank.insert(team, team->getStats());
 		
 	}
-	catch(const AVLTree<Team, int>::NodeNotFound& e) {
-		return StatusType::FAILURE;
-	}
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
+	}
+	catch(const std::exception& e) {
+		return StatusType::FAILURE;
 	}
 	return StatusType::SUCCESS;
 }
@@ -144,7 +144,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<Team, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return output_t<int>(winner);
@@ -162,7 +162,7 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return 22;
@@ -182,7 +182,7 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return StatusType::SUCCESS;
@@ -199,7 +199,7 @@ output_t<int> world_cup_t::get_player_cards(int playerId) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return StatusType::SUCCESS; //inaccessible
@@ -216,7 +216,7 @@ output_t<int> world_cup_t::get_team_points(int teamId) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return 30003; //inaccessible
@@ -259,7 +259,7 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	return permutation_t(); //inaccessible
@@ -273,6 +273,14 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 	try {
 		shared_ptr<Team> team1 = this->teamsById.find(teamId1);
 		shared_ptr<Team> team2 = this->teamsById.find(teamId2);
+
+		if (team1->getSize() == 0 && team2->getSize() == 0){
+			team1->addPoints(team2->getPoints());
+			this->teamsById.remove(teamId2);
+			this->teamsByRank.remove(team2->getStats());
+			return StatusType::SUCCESS;
+		}
+
 		shared_ptr<UpTree> root1 = team1->getRoot();
 		shared_ptr<UpTree> root2 = team2->getRoot();
 
@@ -287,8 +295,8 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->addPoints(team2->getPoints());
 		if (size2 > size1) {
 			team1->setRoot(root2);
+			root2->setTeamId(teamId1);
 		}
-		root2->setTeamId(teamId1);
 		this->teamsById.remove(teamId2);
 		this->teamsByRank.remove(team2->getStats());
 		this->teamsByRank.remove(team1->getStats());
@@ -298,7 +306,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
 	}
-	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {
+	catch(const std::exception& e) {
 		return StatusType::FAILURE;
 	}
 	

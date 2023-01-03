@@ -14,7 +14,7 @@ class HashTable {
     public:
         HashTable();
 
-        ~HashTable() = default;
+        ~HashTable();
 
         HashTable(const HashTable& other) = default;
         

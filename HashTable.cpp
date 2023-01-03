@@ -12,6 +12,10 @@ HashTable::HashTable():
     }
 }
 
+HashTable::~HashTable() {
+    delete[] this->arr;
+}
+
 void HashTable::add(shared_ptr<UpTree> tree) {
     float newLoadFactor = (this->getElemNum() + 1) / this->getSize();
 

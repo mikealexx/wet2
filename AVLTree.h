@@ -348,7 +348,13 @@ TreeNode<T, S>* AVLTree<T, S>::findNode(const S& key){
 
 template<class T, class S>
 shared_ptr<T> AVLTree<T, S>::find(const S& key) {
-    return findNode(key)->data;
+    try{
+        return findNode(key)->data;
+    }
+    catch(const std::exception& e) {
+        throw e;
+    }
+    return nullptr;
 }
 
 template<class T, class S>

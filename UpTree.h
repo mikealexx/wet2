@@ -11,7 +11,7 @@ class Team;
 class UpTree {
     private:
 
-        Player* player;
+        shared_ptr<Player> player;
         shared_ptr<UpTree> parent;
         permutation_t spiritRank;
         int gamesPlayedRank;
@@ -23,7 +23,7 @@ class UpTree {
     public:
 
         UpTree() = delete;
-        UpTree(Player* player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId);
+        UpTree(shared_ptr<Player> player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId);
         ~UpTree() = default;
         
         int getPlayerId() const;
@@ -145,7 +145,7 @@ class UpTree {
 
         void setLastPerm(permutation_t perm);
 
-        Player* getPlayer() const;
+        shared_ptr<Player> getPlayer() const;
 
         int getTeamId() const;
 

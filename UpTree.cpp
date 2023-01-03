@@ -1,6 +1,6 @@
 #include "UpTree.h"
 
-UpTree::UpTree(Player* player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId):
+UpTree::UpTree(shared_ptr<Player> player, const permutation_t& spiritRank, int gamesPlayedRank, int teamId):
     player(player),
     parent(nullptr),
     spiritRank(spiritRank),
@@ -55,7 +55,7 @@ void UpTree::setLastPerm(permutation_t perm) {
     this->lastPerm = perm;
 }
 
-Player* UpTree::getPlayer() const {
+shared_ptr<Player> UpTree::getPlayer() const {
     return this->player;
 }
 

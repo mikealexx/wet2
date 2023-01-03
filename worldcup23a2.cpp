@@ -132,7 +132,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 				winner = 0;
 				team1->addPoints(1);
 				team2->addPoints(1);
-			}
+			} 
 		}
 		team1->addGamesPlayed(1);
 		shared_ptr<UpTree> root1 = team1->getRoot();

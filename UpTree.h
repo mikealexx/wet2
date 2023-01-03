@@ -76,18 +76,20 @@ class UpTree {
 
             shared_ptr<UpTree> temp = player;
             while(temp->getParent() != nullptr) {
-                sumGames -= temp->getGamesPlayedRank();
+                int tempGames = temp->getGamesPlayedRank();
                 temp->setGamesPlayedRank(sumGames);
-
-                productSpirit = productSpirit * temp->getSpiritRank().inv();
+                sumGames -= tempGames;
+                
+                permutation_t tempSpirit = temp->getSpiritRank();
                 temp->setSpiritRank(productSpirit);
+                productSpirit = productSpirit * tempSpirit.inv();
 
                 shared_ptr<UpTree> temp2 = temp;
                 temp = temp->getParent();
-                temp2->setParent(temp);
+                temp2->setParent(out);
             }
 
-            return temp;
+            return out;
         }
 
         static int getGamesPlayed(shared_ptr<UpTree> player) {

@@ -302,12 +302,16 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->addGoalKeepers(team2->getGoalKeepers());
 		if (size2 > size1) {
 			team1->setRoot(root2);
-			root2->setTeamId(teamId1);
 		}
+		
 		this->teamsById.remove(teamId2);
 		this->teamsByRank.remove(team2->getStats());
 		this->teamsByRank.remove(team1->getStats());
 		this->teamsByRank.insert(team1, team1->getStats());
+
+		if (root2 != nullptr){
+			root2->setTeamId(teamId1);
+		}
 
 	}
 	catch(const std::bad_alloc& e) {

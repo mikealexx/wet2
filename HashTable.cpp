@@ -38,13 +38,12 @@ void HashTable::add(shared_ptr<UpTree> tree) {
     int pos = hashFunction(tree->getPlayerId(), this->getSize());
     this->getArray()[pos].insert(tree, tree->getPlayerId());
     this->elemNum++;
-    this->setSize(this->getSize() + 1);
     
 }
 
 shared_ptr<UpTree> HashTable::find(int playerId) {
     int pos = hashFunction(playerId, this->getSize());
-    return this->getArray()[pos].findNode(playerId)->data;
+    return this->getArray()[pos].find(playerId);
 }
 
 int HashTable::getSize() const {

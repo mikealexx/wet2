@@ -36,7 +36,9 @@ StatusType world_cup_t::remove_team(int teamId) {
 		shared_ptr<Team> team = this->teamsById.find(teamId);
 		this->teamsById.remove(teamId);
 		this->teamsByRank.remove(team->getStats());
-		team->getRoot()->setTeamId(-1);
+		if(team->getSize() > 0) {
+			team->getRoot()->setTeamId(-1);
+		}
 	}
 	catch(const AVLTree<Team, int>::NodeNotFound& e) {
 		return StatusType::FAILURE;
@@ -57,7 +59,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
 		return StatusType::FAILURE;
 	}
-	catch(const AVLTree<UpTree, int>::KeyAlreadyExists& e) {} //Player with this id not found - proceed.
+	catch(const AVLTree<UpTree, int>::NodeNotFound& e) {} //Player with this id not found - proceed.
 
 	try {
 		shared_ptr<Team> team = this->teamsById.find(teamId);
@@ -71,6 +73,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 			shared_ptr<UpTree> root = team->getRoot();
 			tree->setSpiritRank(root->getLastPerm() * spirit);
 			root->setLastPerm(root->getLastPerm() * spirit);
+		}
+		if (goalKeeper){
+			team->addGoalKeepers(1);
 		}
 		team->setTeamSpirit(team->getTeamSpirit() * spirit);
 		team->addAbility(ability);
@@ -95,6 +100,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 	if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
 		return StatusType::INVALID_INPUT;
 	}
+	int winner = 0;
 	try {
 		shared_ptr<Team> team1 = this->teamsById.find(teamId1);
 		shared_ptr<Team> team2 = this->teamsById.find(teamId2);
@@ -103,28 +109,37 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 		}
 		int team1Score = team1->getPoints() + team1->getAbility();
 		int team2Score = team2->getPoints() + team2->getAbility();
-		if(team1Score < team2Score) { //team1 wins by score
+		if(team1Score > team2Score) { //team1 wins by score
+			winner = 1;
 			team1->addPoints(3);
 		}
-		else if(team1Score > team2Score) { //team2 wins by score
+		else if(team1Score < team2Score) { //team2 wins by score
+		winner = 3;
 			team2->addPoints(3);
 		}
 		else { //tie by score, proceed playing by team strength
 			int team1Strength = team1->getTeamSpirit().strength();
 			int team2Strength = team2->getTeamSpirit().strength();
 			if(team1Strength > team2Strength) { //team1 wins by strength
+				winner = 2;
 				team1->addPoints(3);
 			}
 			else if(team1Strength < team2Strength) { //team2 wins by strength
+				winner = 4;
 				team2->addPoints(3);
 			}
 			else { //tie
+				winner = 0;
 				team1->addPoints(1);
 				team2->addPoints(1);
 			}
 		}
 		team1->addGamesPlayed(1);
+		shared_ptr<UpTree> root1 = team1->getRoot();
+		root1->setGamesPlayedRank(root1->getGamesPlayedRank() + 1);
 		team2->addGamesPlayed(1);
+		shared_ptr<UpTree> root2 = team2->getRoot();
+		root2->setGamesPlayedRank(root2->getGamesPlayedRank() + 1);
 	}
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;
@@ -132,7 +147,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 	catch(const AVLTree<Team, int>::NodeNotFound& e) {
 		return StatusType::FAILURE;
 	}
-	return StatusType::SUCCESS;
+	return output_t<int>(winner);
 }
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId) {
@@ -141,7 +156,8 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId) {
 	}
 	try {
 		shared_ptr<UpTree> player = this->playersHash.find(playerId);
-		return output_t<int>(UpTree::getGamesPlayed(player));
+		int out = UpTree::getGamesPlayed(player);
+		return output_t<int>(out);
 	}
 	catch(const std::bad_alloc& e) {
 		return StatusType::ALLOCATION_ERROR;

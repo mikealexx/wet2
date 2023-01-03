@@ -49,8 +49,8 @@ class UpTree {
                 tree2->setSize(tree1->getSize() + tree2->getSize());
                 int gamesRank1 = tree1->getGamesPlayedRank();
                 int gamesRank2 = tree2->getGamesPlayedRank();
-                tree1->setGamesPlayedRank(-gamesRank2);
-                tree2->setGamesPlayedRank(gamesRank2 + gamesRank1);
+                tree1->setGamesPlayedRank(gamesRank1 - gamesRank2);
+                //tree2->setGamesPlayedRank(gamesRank2 + gamesRank1);
                 permutation_t spirit1 = tree1->getSpiritRank();
                 permutation_t spirit2 = tree2->getSpiritRank();
                 tree1->setSpiritRank(spirit2.inv() * tree1->getLastPerm().inv());

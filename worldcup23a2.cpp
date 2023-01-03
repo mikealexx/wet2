@@ -14,7 +14,10 @@ StatusType world_cup_t::add_team(int teamId) {
 	}
 	try {
 		shared_ptr<Team> temp = this->teamsById.find(teamId);
-		return StatusType::FAILURE; //found an existing team with this id - return FAILURE.
+        if (temp != nullptr){
+            return StatusType::FAILURE; //found an existing team with this id - return FAILURE.
+        }
+
 	}
 	catch(const std::exception& e) {} //team with this id not found (which is good) - proceed.
 	try {
@@ -35,6 +38,9 @@ StatusType world_cup_t::remove_team(int teamId) {
 	if(teamId <= 0) {
 		return StatusType::INVALID_INPUT;
 	}
+    if(this->teamsById.getSize() == 0){
+        return StatusType::FAILURE;
+    }
 	try {
 		shared_ptr<Team> team = this->teamsById.find(teamId);
 		this->teamsById.remove(teamId);
@@ -59,8 +65,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 	}
 	
 	try {
-		shared_ptr<UpTree> temp = this->playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
-		return StatusType::FAILURE;
+		shared_ptr<UpTree> temp = this->playersHash.find(playerId);
+        shared_ptr<Team> team = this->teamsById.find(teamId);//Found an existing player with this id - return FAILURE.
+		if (temp != nullptr || team == nullptr){
+            return StatusType::FAILURE;
+        }
+
 	}
 	catch(const std::exception& e) {} //Player with this id not found - proceed.
 
@@ -84,12 +94,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		}
 		team->setTeamSpirit(team->getTeamSpirit() * spirit);
 		team->addAbility(ability);
-		team->updateStats();
 		team->addToSize(1);
 		root->setSize(root->getSize() + 1);
 		this->playersHash.add(tree);
 		
 		this->teamsByRank.remove(team->getStats());
+        team->updateStats();
 		this->teamsByRank.insert(team, team->getStats());
 		
 	}
@@ -110,6 +120,9 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 	try {
 		shared_ptr<Team> team1 = this->teamsById.find(teamId1);
 		shared_ptr<Team> team2 = this->teamsById.find(teamId2);
+        if(team1 == nullptr || team2 == nullptr) {
+            return StatusType::FAILURE;
+        }
 		if(team1->getGoalKeepers() < 1 || team2->getGoalKeepers() < 1) {
 			return StatusType::FAILURE;
 		}
@@ -163,6 +176,9 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId) {
 	}
 	try {
 		shared_ptr<UpTree> player = this->playersHash.find(playerId);
+        if (player == nullptr) {
+            return StatusType::FAILURE;
+        }
 		int out = UpTree::getGamesPlayed(player);
 		return output_t<int>(out);
 	}
@@ -181,6 +197,9 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards) {
 	}
 	try {
 		shared_ptr<UpTree> player = this->playersHash.find(playerId);
+        if (player == nullptr) {
+            return StatusType::FAILURE;
+        }
 		if(!UpTree::isActive(player)) {
 			return StatusType::FAILURE;
 		}
@@ -201,6 +220,9 @@ output_t<int> world_cup_t::get_player_cards(int playerId) {
 	}
 	try {
 		shared_ptr<UpTree> player = this->playersHash.find(playerId);
+        if (player == nullptr) {
+            return StatusType::FAILURE;
+        }
 		return output_t<int>(player->getPlayer()->getCards());
 	}
 	catch(const std::bad_alloc& e) {
@@ -218,6 +240,9 @@ output_t<int> world_cup_t::get_team_points(int teamId) {
 	}
 	try {
 		shared_ptr<Team> team = this->teamsById.find(teamId);
+        if (team == nullptr) {
+            return StatusType::FAILURE;
+        }
 		return output_t<int>(team->getPoints());
 	}
 	catch(const std::bad_alloc& e) {
@@ -234,10 +259,14 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i) {
 		return output_t<int>(StatusType::FAILURE);
 	}
 	
-	int sum = 0;
+	//int sum = 0;
 	TreeNode<Team, TeamStats>* node = this->teamsByRank.root;
 	while (node != nullptr) {
-		int idx = sum + node->getRank();
+        int rightSize = 0;
+        if (node->right != nullptr) {
+            rightSize = node->right->getRank();
+        }
+		int idx = node->getRank() - rightSize - 1;
 		if (idx == i) {
 			return output_t<int>(node->data->getID());
 		}
@@ -245,7 +274,7 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i) {
 			node = node->left;
 		}
 		else {
-			sum += node->getRank() + 1;
+			//sum += node->getRank() + 1;
 			node = node->right;
 		}
 	}
@@ -258,7 +287,7 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId) {
 	}
 	try {
 		shared_ptr<UpTree> player = this->playersHash.find(playerId);
-		if(!UpTree::isActive(player)) {
+		if(player == nullptr || !UpTree::isActive(player)) {
 			return StatusType::FAILURE;
 		}
 		return output_t<permutation_t>(UpTree::getPartialSpirit(player));
@@ -280,6 +309,9 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 	try {
 		shared_ptr<Team> team1 = this->teamsById.find(teamId1);
 		shared_ptr<Team> team2 = this->teamsById.find(teamId2);
+        if(team1 == nullptr || team2 == nullptr) {
+            return StatusType::FAILURE;
+        }
 
 		if (team1->getSize() == 0 && team2->getSize() == 0){
 			team1->addPoints(team2->getPoints());
@@ -294,7 +326,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		if (root1 != nullptr && root2 != nullptr){
 			UpTree::Union(team1->getRoot(), team2->getRoot());	
 		}
-		int size1 = team1->getSize();
+		
 		int size2 = team2->getSize();
 		
 		team1->addToSize(size2);
@@ -302,13 +334,13 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->addPoints(team2->getPoints());
 		team1->setTeamSpirit(team1->getTeamSpirit() * team2-> getTeamSpirit());
 		team1->addGoalKeepers(team2->getGoalKeepers());
-		if (size2 > size1) {
-			team1->setRoot(root2);
-		}
+
+		team1->setRoot(UpTree::Find(team1->getRoot()));
 		
 		this->teamsById.remove(teamId2);
 		this->teamsByRank.remove(team2->getStats());
-		this->teamsByRank.remove(team1->getStats());
+        this->teamsByRank.remove(team1->getStats());
+        team1->updateStats();
 		this->teamsByRank.insert(team1, team1->getStats());
 
 		if (root2 != nullptr){

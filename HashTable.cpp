@@ -33,7 +33,7 @@ void HashTable::add(shared_ptr<UpTree> tree) {
                     int pos = hashFunction(curr->getPlayerId(), newSize);
                     newArr[pos].insert(curr, curr->getPlayerId());
                 }
-                delete tempArr;
+                delete[] tempArr;
             }
             this->setArray(newArr);
             this->setSize(newSize);

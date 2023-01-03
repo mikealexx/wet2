@@ -43,8 +43,13 @@ int main()
 	
 	// Execute all commands in file
 	string op;
+	int i=0;
 	while (cin >> op)
 	{
+		i++;
+		if(i == 276){
+			cout << "";
+		}
 		if (!op.compare("add_team"))
 		{
 			cin >> tid;

@@ -20,7 +20,7 @@ class HashTable {
         
         HashTable& operator=(const HashTable& other) = default;
         
-        static int hashFunction(int id, int size){
+        static int hashFunction(const int& id, int size){
             return id % size;
         };
 

@@ -51,9 +51,10 @@ void HashTable::add(shared_ptr<UpTree> tree) {
 
 shared_ptr<UpTree> HashTable::find(int playerId) {
     int pos = hashFunction(playerId, this->getSize());
-    if(this->getArray()[pos].root == nullptr) {
-        throw AVLTree<UpTree, int>::NodeNotFound();
-    }
+    /*if(this->getArray()[pos].root == nullptr) {
+        //throw AVLTree<UpTree, int>::NodeNotFound();
+        throw std::exception();
+    }*/
     try {
         return this->getArray()[pos].find(playerId);
     }

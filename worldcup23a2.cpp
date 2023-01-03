@@ -59,7 +59,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 	}
 	
 	try {
-		playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
+		shared_ptr<UpTree> temp = this->playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
 		return StatusType::FAILURE;
 	}
 	catch(const std::exception& e) {} //Player with this id not found - proceed.
@@ -68,12 +68,13 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		shared_ptr<Team> team = this->teamsById.find(teamId);
 		shared_ptr<Player> player (new Player(playerId, spirit, gamesPlayed - team->getGamesPlayed(), ability, cards, goalKeeper));
 		shared_ptr<UpTree> tree(new UpTree(player, spirit, 0, teamId));
-		if (team->getRoot() == nullptr) {
+		shared_ptr<UpTree> root = team->getRoot();
+		if (root == nullptr) {
 			tree->setGamesPlayedRank(team->getGamesPlayed());
 			team->setRoot(tree);
+			root = team->getRoot();
 		}
-		else{
-			shared_ptr<UpTree> root = team->getRoot();
+		else{	
 			tree->setSpiritRank(root->getLastPerm() * spirit);
 			root->setLastPerm(root->getLastPerm() * spirit);
 			tree->setParent(root);
@@ -85,6 +86,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 		team->addAbility(ability);
 		team->updateStats();
 		team->addToSize(1);
+		root->setSize(root->getSize() + 1);
 		this->playersHash.add(tree);
 		
 		this->teamsByRank.remove(team->getStats());

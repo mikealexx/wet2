@@ -74,7 +74,7 @@ TeamStats Team::getStats() const{
 }
 
 void Team::updateStats() {
-    stats = TeamStats(this->getAbility(), this->getID());
+    this->stats = TeamStats(this->getAbility(), this->getID());
 }
 
 void Team::setRoot(shared_ptr<UpTree> root) {

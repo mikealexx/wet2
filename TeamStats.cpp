@@ -7,7 +7,7 @@ int TeamStats::getAbility() const {
 }
 
 void TeamStats::addAbility(int ability) {
-    this-> ability += ability;
+    this->ability += ability;
 }
 
 bool operator<(const TeamStats& l, const TeamStats& r) {

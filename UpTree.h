@@ -42,6 +42,7 @@ class UpTree {
                 permutation_t spirit2 = tree2->getSpiritRank();
                 tree2->setSpiritRank(tree1->getLastPerm() * spirit2);
                 tree1->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());
+                tree2->setLastPerm(tree1->getLastPerm());
             }
             else {
                 tree1->setParent(tree2);
@@ -56,6 +57,7 @@ class UpTree {
                 tree1->setSpiritRank(spirit2.inv() * tree1->getLastPerm().inv());
                 tree2->setSpiritRank(spirit1 * tree1->getLastPerm() * spirit2);
                 tree2->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());
+                tree1->setLastPerm(tree2->getLastPerm());
             }
         }
         
@@ -82,7 +84,7 @@ class UpTree {
                 
                 permutation_t tempSpirit = temp->getSpiritRank();
                 temp->setSpiritRank(productSpirit);
-                productSpirit = productSpirit * tempSpirit.inv();
+                productSpirit =  tempSpirit.inv() * productSpirit;
 
                 shared_ptr<UpTree> temp2 = temp;
                 temp = temp->getParent();
@@ -144,6 +146,7 @@ class UpTree {
         shared_ptr<UpTree> getParent() const;
 
         void setParent(shared_ptr<UpTree> tree);
+
 
         permutation_t getLastPerm() const;
 

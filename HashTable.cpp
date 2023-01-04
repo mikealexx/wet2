@@ -35,6 +35,7 @@ void HashTable::add(shared_ptr<UpTree> tree) {
                 }
                 delete[] tempArr;
             }
+            //delete[] this->arr;
             this->setArray(newArr);
             this->setSize(newSize);
         }

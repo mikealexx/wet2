@@ -116,7 +116,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) {
 	if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) {
 		return StatusType::INVALID_INPUT;
 	}
-	int winner = 0;
+	int winner = 0; //0 - tie, 1 - team1 won by score, 2 - team1 won by strength, 3 - team2 won by score, 4 - team2 won by strength
 	try {
 		shared_ptr<Team> team1 = this->teamsById.find(teamId1);
 		shared_ptr<Team> team2 = this->teamsById.find(teamId2);
@@ -276,7 +276,7 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i) {
 			node = node->left;
 		}
 		else {
-			sum = idx;
+			sum = idx + 1;
 			node = node->right;
 		}
 	}
@@ -317,10 +317,39 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 
 		if (team1->getSize() == 0 && team2->getSize() == 0){
 			team1->addPoints(team2->getPoints());
+			team1->addAbility(team2->getAbility());
 			this->teamsById.remove(teamId2);
 			this->teamsByRank.remove(team2->getStats());
+			this->teamsByRank.remove(team1->getStats());
+        	team1->updateStats();
+			this->teamsByRank.insert(team1, team1->getStats());
+			team1->addGamesPlayed(team2->getGamesPlayed());
 			return StatusType::SUCCESS;
 		}
+		/*else if (team2->getSize() == 0){
+			team1->addPoints(team2->getPoints());
+			team1->addAbility(team2->getAbility());
+			this->teamsById.remove(teamId2);
+			this->teamsByRank.remove(team2->getStats());
+			this->teamsByRank.remove(team1->getStats());
+        	team1->updateStats();
+			this->teamsByRank.insert(team1, team1->getStats());
+			return StatusType::SUCCESS;
+		}
+		else if (team1->getSize() == 0) {
+			team1->addPoints(team2->getPoints());
+			team1->addAbility(team2->getAbility());
+			team1->addToSize(team1->getSize());
+			team1->setTeamSpirit(team1->getTeamSpirit() * team2-> getTeamSpirit());
+			team1->addGoalKeepers(team2->getGoalKeepers());
+			this->teamsById.remove(teamId2);
+			this->teamsByRank.remove(team2->getStats());
+			team1->setRoot(team2->getRoot());
+			this->teamsByRank.remove(team1->getStats());
+        	team1->updateStats();
+			this->teamsByRank.insert(team1, team1->getStats());
+			return StatusType::SUCCESS;
+		}*/
 
 		shared_ptr<UpTree> root1 = team1->getRoot();
 		shared_ptr<UpTree> root2 = team2->getRoot();
@@ -334,7 +363,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
 		team1->addToSize(size2);
 		team1->addAbility(team2->getAbility());
 		team1->addPoints(team2->getPoints());
-		team1->setTeamSpirit(team1->getTeamSpirit() * team2-> getTeamSpirit());
+		team1->setTeamSpirit(team1->getTeamSpirit() * team2->getTeamSpirit());
 		team1->addGoalKeepers(team2->getGoalKeepers());
 
         if (team1->getRoot() != nullptr){
@@ -349,6 +378,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) {
         this->teamsByRank.remove(team1->getStats());
         team1->updateStats();
 		this->teamsByRank.insert(team1, team1->getStats());
+		team1->addGamesPlayed(team1->getRoot()->getGamesPlayedRank() - team1->getGamesPlayed());
 
 		if (root2 != nullptr){
 			root2->setTeamId(teamId1);

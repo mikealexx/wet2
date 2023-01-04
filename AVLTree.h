@@ -78,6 +78,8 @@ class AVLTree {
 
             else{
 
+                root->setRank(root->getRank()-1);
+
                 if (root->left == nullptr && root->right == nullptr) {
                     delete(root);
                     return nullptr;

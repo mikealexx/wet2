@@ -35,6 +35,9 @@ void HashTable::add(shared_ptr<UpTree> tree) {
                 }
                 delete[] tempArr;
             }
+
+            //AVLTree<UpTree, int>* temp = this->arr;
+            //delete[] temp;
             //delete[] this->arr;
             this->setArray(newArr);
             this->setSize(newSize);
@@ -44,6 +47,7 @@ void HashTable::add(shared_ptr<UpTree> tree) {
         this->getArray()[pos].insert(tree, tree->getPlayerId());
     }
     catch(const std::exception& e){
+        //delete[] this->arr;
         throw e;
     }
     this->elemNum++;
@@ -80,8 +84,7 @@ AVLTree<UpTree, int>* HashTable::getArray() const {
     return this->arr;
 }
 
-void HashTable::setArray(AVLTree<UpTree, int>*& arr) {
-    //delete this->arr;
+void HashTable::setArray(AVLTree<UpTree, int>* arr) {
     this->arr = arr;
 }
 

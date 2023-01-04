@@ -41,8 +41,7 @@ class UpTree {
                 tree2->setGamesPlayedRank(gamesRank2 - gamesRank1);
                 permutation_t spirit2 = tree2->getSpiritRank();
                 tree2->setSpiritRank(tree1->getLastPerm() * spirit2);
-                tree1->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());
-                tree2->setLastPerm(tree1->getLastPerm());
+                tree1->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());   
             }
             else {
                 tree1->setParent(tree2);
@@ -51,13 +50,11 @@ class UpTree {
                 int gamesRank1 = tree1->getGamesPlayedRank();
                 int gamesRank2 = tree2->getGamesPlayedRank();
                 tree1->setGamesPlayedRank(gamesRank1 - gamesRank2);
-                //tree2->setGamesPlayedRank(gamesRank2 + gamesRank1);
                 permutation_t spirit1 = tree1->getSpiritRank();
                 permutation_t spirit2 = tree2->getSpiritRank();
                 tree1->setSpiritRank(spirit2.inv() * tree1->getLastPerm().inv());
                 tree2->setSpiritRank(spirit1 * tree1->getLastPerm() * spirit2);
-                tree2->setLastPerm(tree1->getLastPerm() * spirit2 * tree2->getLastPerm());
-                tree1->setLastPerm(tree2->getLastPerm());
+                //tree2->setLastPerm(tree2->getLastPerm());
             }
         }
         
@@ -84,7 +81,7 @@ class UpTree {
                 
                 permutation_t tempSpirit = temp->getSpiritRank();
                 temp->setSpiritRank(productSpirit);
-                productSpirit =  tempSpirit.inv() * productSpirit;
+                productSpirit = productSpirit * tempSpirit.inv();
 
                 shared_ptr<UpTree> temp2 = temp;
                 temp = temp->getParent();

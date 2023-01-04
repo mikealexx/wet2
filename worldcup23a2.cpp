@@ -200,6 +200,7 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards) {
         if (player == nullptr) {
             return StatusType::FAILURE;
         }
+		UpTree::Find(player);
 		if(!UpTree::isActive(player)) {
 			return StatusType::FAILURE;
 		}
@@ -223,6 +224,7 @@ output_t<int> world_cup_t::get_player_cards(int playerId) {
         if (player == nullptr) {
             return StatusType::FAILURE;
         }
+		UpTree::Find(player);
 		return output_t<int>(player->getPlayer()->getCards());
 	}
 	catch(const std::bad_alloc& e) {
@@ -292,6 +294,7 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId) {
 		if(player == nullptr || !UpTree::isActive(player)) {
 			return StatusType::FAILURE;
 		}
+		UpTree::Find(player);
 		return output_t<permutation_t>(UpTree::getPartialSpirit(player));
 	}
 	catch(const std::bad_alloc& e) {

@@ -36,7 +36,7 @@ class HashTable {
 
         AVLTree<UpTree, int>* getArray() const; 
         
-        void setArray(AVLTree<UpTree, int>*& arr);
+        void setArray(AVLTree<UpTree, int>* arr);
 
         void setSize(int size);
 };

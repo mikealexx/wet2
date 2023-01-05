@@ -41,23 +41,31 @@ int DynamicArray::getElemSize() const {
 }
 
 void DynamicArray::resize(int (*hash_func)(int, int)) {
-    this->size = 2 * (this->size + 1) - 1;
-    shared_ptr<AVLTree<UpTree, int>>* newArr = new shared_ptr<AVLTree<UpTree, int>>[this->size];
+    int newSize = 2 * (this->size + 1) - 1;
+    shared_ptr<AVLTree<UpTree, int>>* newArr = new shared_ptr<AVLTree<UpTree, int>>[newSize];
+    for(int k = 0; k < newSize; k++) {
+        newArr[k] = shared_ptr<AVLTree<UpTree, int>>(new AVLTree<UpTree, int>);
+    }
     for(int i = 0; i < this->size; i++) {
         shared_ptr<AVLTree<UpTree, int>> curr = this->arr[i];
-        TreeNode<UpTree, int>** tempArr = new TreeNode<UpTree, int>*[curr->getSize()];
-        AVLTree<UpTree, int>::treeToArray(tempArr, curr->root, 0);
-        for(int j = 0; j < curr->getSize(); j++) {
-            shared_ptr<UpTree> currPlayer = tempArr[j]->data;
-            int pos = hash_func(currPlayer->getPlayerId(), this->size);
-            if(this->arr[pos] == nullptr) {
-                this->arr[pos] = shared_ptr<AVLTree<UpTree, int>>(new AVLTree<UpTree, int>());
+        if(curr != nullptr) {
+            TreeNode<UpTree, int>** tempArr = new TreeNode<UpTree, int>*[curr->getSize()];
+            AVLTree<UpTree, int>::treeToArray(tempArr, curr->root, 0);
+            for(int j = 0; j < curr->getSize(); j++) {
+                if(tempArr[j] != nullptr) {
+                    shared_ptr<UpTree> currPlayer = tempArr[j]->data;
+                    int pos = hash_func(currPlayer->getPlayerId(), this->size);
+                    if(newArr[pos] == nullptr) {
+                        newArr[pos] = shared_ptr<AVLTree<UpTree, int>>(new AVLTree<UpTree, int>());
+                    }
+                    newArr[pos]->insert(currPlayer, currPlayer->getPlayerId());
+                    this->elemNum++;
+                }
             }
-            this->arr[pos]->insert(currPlayer, currPlayer->getPlayerId());
-            this->elemNum++;
+            delete[] tempArr;
         }
-        delete[] tempArr;
     }
-    delete this->arr;
+    delete[] this->arr;
     this->arr = newArr;
+    this->size = newSize;
 }

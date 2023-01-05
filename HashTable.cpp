@@ -10,8 +10,8 @@ void HashTable::add(shared_ptr<UpTree> tree) {
 
 shared_ptr<UpTree> HashTable::find(int playerId) {
     int pos = hashFunction(playerId, this->getSize());
-    if(this->arr[pos] == nullptr) {
-        return nullptr;
+    if(this->arr[pos].get() == nullptr) {
+        throw std::exception();
     }
     try {
         return this->arr[pos]->find(playerId);

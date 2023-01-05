@@ -70,7 +70,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
             return StatusType::FAILURE; //team doesn't exist
         }
 		shared_ptr<UpTree> temp = this->playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
-		if(temp == nullptr) {
+		if(temp != nullptr) {
 			return StatusType::FAILURE;
 		}
 	}

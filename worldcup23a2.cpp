@@ -65,12 +65,14 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 	}
 	
 	try {
-		shared_ptr<UpTree> temp = this->playersHash.find(playerId);
-        shared_ptr<Team> team = this->teamsById.find(teamId);//Found an existing player with this id - return FAILURE.
-		if (temp != nullptr || team == nullptr){
-            return StatusType::FAILURE;
+		shared_ptr<Team> team = this->teamsById.find(teamId);
+		if (team == nullptr){
+            return StatusType::FAILURE; //team doesn't exist
         }
-
+		shared_ptr<UpTree> temp = this->playersHash.find(playerId); //Found an existing player with this id - return FAILURE.
+		if(temp == nullptr) {
+			return StatusType::FAILURE;
+		}
 	}
 	catch(const std::exception& e) {} //Player with this id not found - proceed.
 

@@ -47,7 +47,7 @@ int main()
 	while (cin >> op)
 	{
 		i++;
-		if(i == 194){
+		if(i == 6){
 			cout << "";
 		}
 		if (!op.compare("add_team"))

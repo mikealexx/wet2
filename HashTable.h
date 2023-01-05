@@ -2,25 +2,24 @@
 #define HashTable_h
 
 #include "UpTree.h"
+#include "DynamicArray.h"
 
 class HashTable {
 
     private:
     
-        int size;
-        int elemNum;
-        AVLTree<UpTree, int>* arr;
+        DynamicArray arr;
 
     public:
         HashTable();
 
-        ~HashTable();
+        ~HashTable() = default;
 
         HashTable(const HashTable& other) = default;
         
         HashTable& operator=(const HashTable& other) = default;
         
-        static int hashFunction(const int& id, int size){
+        static int hashFunction(int id, int size){
             return id % size;
         };
 
@@ -30,15 +29,7 @@ class HashTable {
         
         int getElemNum() const;
 
-        void addElemNum(int num);
-
         int getSize() const;
-
-        AVLTree<UpTree, int>* getArray() const; 
-        
-        void setArray(AVLTree<UpTree, int>* arr);
-
-        void setSize(int size);
 };
 
 #endif

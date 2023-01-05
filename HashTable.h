@@ -9,7 +9,7 @@ class HashTable {
     
         int size;
         int elemNum;
-        AVLTree<UpTree, int>* arr;
+        shared_ptr<AVLTree<UpTree, int>>* arr;
 
     public:
         HashTable();
@@ -34,9 +34,9 @@ class HashTable {
 
         int getSize() const;
 
-        AVLTree<UpTree, int>* getArray() const; 
+        shared_ptr<AVLTree<UpTree, int>>* getArray() const; 
         
-        void setArray(AVLTree<UpTree, int>* arr);
+        void setArray(shared_ptr<AVLTree<UpTree, int>>* arr);
 
         void setSize(int size);
 };

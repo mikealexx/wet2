@@ -2,6 +2,7 @@
 #define HashTable_h
 
 #include "UpTree.h"
+#include "LinkedList.h"
 
 class HashTable {
 
@@ -9,7 +10,7 @@ class HashTable {
     
         int size;
         int elemNum;
-        AVLTree<UpTree, int>* arr;
+        LinkedList** arr;
 
     public:
         HashTable();
@@ -34,9 +35,9 @@ class HashTable {
 
         int getSize() const;
 
-        AVLTree<UpTree, int>* getArray() const; 
+        LinkedList** getArray() const;
         
-        void setArray(AVLTree<UpTree, int>* arr);
+        void setArray(LinkedList** arr);
 
         void setSize(int size);
 };

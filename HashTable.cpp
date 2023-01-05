@@ -5,7 +5,7 @@ HashTable::HashTable():
     elemNum()
 {
     try {
-        this->arr = new AVLTree<UpTree, int>[this->size];
+        this->arr = new LinkedList*[this->size];
     }
     catch(const std::bad_alloc& e) {
         throw std::bad_alloc();
@@ -18,7 +18,41 @@ HashTable::~HashTable() {
 
 void HashTable::add(shared_ptr<UpTree> tree) {
     float newLoadFactor = (this->getElemNum() + 1) / float(this->getSize());
-    try{
+    if (newLoadFactor >= 0.7) {
+        int newSize = 2 * (this->getSize() + 1) - 1;
+        LinkedList** newArr = new LinkedList*[newSize];
+
+        for (int i = 0; i < this->getSize(); i++){
+            LinkedList* curr = this->getArray()[i];
+            while(curr != nullptr){
+                shared_ptr<UpTree> currTree = curr->getData();
+                int pos = hashFunction(currTree->getPlayerId(), newSize);
+                if(newArr[pos] == nullptr){
+                    newArr[pos] = new LinkedList(currTree);
+                }
+                else{
+                    newArr[pos]->insert(currTree);
+                }
+                curr = curr->getNext();
+            }
+            //delete[] tempArr;
+        }
+
+        //AVLTree<UpTree, int>* temp = this->arr;
+        //delete[] temp;
+        //delete[] this->arr;
+        this->setArray(newArr);
+        this->setSize(newSize);
+    }
+
+    int pos = hashFunction(tree->getPlayerId(), this->getSize());
+    if(this->arr[pos] == nullptr){
+        this->arr[pos] = new LinkedList(tree);
+    }
+    else{
+        this->arr[pos]->insert(tree);
+    }
+    /*try{
         if (newLoadFactor >= 0.7) {
             int newSize = 2 * (this->getSize() + 1) - 1;
             AVLTree<UpTree, int>* newArr = new AVLTree<UpTree, int>[newSize];
@@ -49,7 +83,7 @@ void HashTable::add(shared_ptr<UpTree> tree) {
     catch(const std::exception& e){
         //delete[] this->arr;
         throw e;
-    }
+    }*/
     this->elemNum++;
     
 }
@@ -61,7 +95,7 @@ shared_ptr<UpTree> HashTable::find(int playerId) {
         throw std::exception();
     }*/
     try {
-        return this->getArray()[pos].find(playerId);
+        return this->getArray()[pos]->find(playerId);
     }
     catch(const std::exception& e) {
         throw e;
@@ -80,11 +114,12 @@ void HashTable::addElemNum(int num) {
     this->elemNum += num;
 }
 
-AVLTree<UpTree, int>* HashTable::getArray() const {
+LinkedList** HashTable::getArray() const {
     return this->arr;
 }
 
-void HashTable::setArray(AVLTree<UpTree, int>* arr) {
+void HashTable::setArray(LinkedList** arr) {
+    delete[] this->arr;
     this->arr = arr;
 }
 
